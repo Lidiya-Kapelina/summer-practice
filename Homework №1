@@ -1,0 +1,106 @@
+class Car {
+    var model: Int
+    var year: Int
+    var brand: String
+    init(model: Int, year: Int, brand: String) {
+            self.model = model
+            self.year = year
+            self.brand = brand
+    }
+    func printCarInfo() {
+        print("автомобиль бренда \(brand) модели \(model) \(year) года выпуска")
+    }
+}
+class BMW: Car {
+    var enginePower: Int
+    var fuelFlow: Int
+    init(enginePower: Int, fuelFlow: Int, model: Int, year: Int, brand: String) {
+        self.enginePower = enginePower
+        self.fuelFlow = fuelFlow
+        super.init(model: model, year: year, brand: brand)
+    }
+}
+class Ferrari: Car {
+    var color: String
+    var fuelFlow: Int
+    init(color: String, fuelFlow: Int, model: Int, year: Int, brand: String) {
+        self.color = color
+        self.fuelFlow = fuelFlow
+        super.init(model: model, year: year, brand: brand)
+    }
+}
+class Toyota: Car {
+    var safetyRating: Int
+    init(brand: String, model: Int, year: Int, safetyRating: Int) {
+        self.safetyRating = safetyRating
+        super.init(model: model, year: year, brand: brand)
+    }
+}
+class Audi: Car {
+    var color: String
+    var fuelFlow: Int
+    init(color: String, fuelFlow: Int, model: Int, year: Int, brand: String ){
+        self.color = color
+        self.fuelFlow = fuelFlow
+        super.init(model: model, year: year, brand: brand)
+    }
+}
+func createCar(brand: String,model: Int, year: Int,fuelFlow: Int,color: String,safetyRating: Int, enginePower: Int)-> Car {
+    switch brand {
+    case "BMW":
+        return BMW(enginePower: enginePower, fuelFlow: fuelFlow, model: model, year: year, brand: brand)
+    case "Toyota":
+        return Toyota(brand: brand, model: model, year: year, safetyRating: safetyRating)
+    case "Audi":
+        return Audi(color: color, fuelFlow: fuelFlow, model: model, year: year, brand: brand)
+    case "Ferrari":
+        return Ferrari(color: color, fuelFlow: fuelFlow, model: model, year: year, brand: brand)
+    default:
+        return Car(model: model, year: year, brand: brand)
+    }
+}
+func race(car1: Car, car2: Car) -> Car {//чем новее, тем лучше
+    if car1.year > car2.year {
+        return car1
+    } else {
+        return car2
+    }
+}
+
+func generateCars(col:Int, data:[String]) -> [Car] {
+    var cars: [Car] = []
+    for i in 0...col-1{
+        cars.append(createCar(brand: data[0+i*7], model: Int(data[1+i*7]) ?? 0, year: Int(data[2+i*7]) ?? 0, fuelFlow:Int(data[3+i*7]) ?? 0, color: (data[4+i*7]), safetyRating: Int(data[5+i*7]) ?? 0, enginePower:Int(data[6+i*7]) ?? 0))
+    }
+    return cars
+}
+
+func runRaces(cars: [Car]) {
+    var pairs: [[Car]] = []
+    for i in 0...(cars.count-2) {
+        for j in (i+1)...(cars.count-1) {
+            pairs.append([cars[i], cars[j]])
+        }
+    }
+    var winners: [Car] = []
+    var i=1
+    for pair in pairs {
+        let winner = race(car1: pair[0], car2: pair[1])
+        print("Победитель в заезде \(i)")
+        i+=1
+        winner.printCarInfo()
+        winners.append(winner)
+    }
+    var overallWinner : Car = winners[0]
+    for winner in winners {
+        if winner.year > overallWinner.year {
+            overallWinner = winner
+        }
+    }
+    print("Итоговый победитель")
+    overallWinner.printCarInfo()
+                              
+}
+var data:[String]=["BMW",  "1",  "2011", "10", "red",  "5", "100", "Toyota", "8",  "2001", "15", "blue", "4", "600","Audi",  "100", "2020", "16",  "black",  "5", "500","Ferrari","33",  "2021", "25",  "green",  "3", "650","Audi", "10",  "2008", "26", "black",  "2", "200", "Ferrari",  "31",  "2015", "24",  "white",  "4", "300","BMW",  "4",  "2007", "10", "black",  "5", "100","Audi",  "4",  "2004", "16", "black",  "1", "300"]
+var cars: [Car] = generateCars(col:8,data:data)
+runRaces(cars: cars)
